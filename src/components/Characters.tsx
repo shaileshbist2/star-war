@@ -12,9 +12,7 @@ import Paper from '@mui/material/Paper';
 import { API } from "./constant"
 import { useSelector, useDispatch } from 'react-redux'
 import { State, characterInfo } from '../state'
-
 import { bindActionCreators } from 'redux'
-
 import "./style.css"
 
 interface ResultType { name: string, gender: string, height: string, birth_year: string, mass: string, skin_color: string }
