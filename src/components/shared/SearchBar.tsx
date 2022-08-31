@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom'
 import { debounce } from "lodash";
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
@@ -10,6 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { changeCharacter, State } from '../../state'
 import { bindActionCreators } from 'redux'
 import { useDispatch, useSelector } from 'react-redux'
+import Button, { ButtonProps } from '@mui/material/Button';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -36,6 +38,14 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
     justifyContent: 'center'
 }));
 
+const ColorButton = styled(Button)<ButtonProps>(({ theme }) => ({
+    color: theme.palette.getContrastText("#000"),
+    backgroundColor: "#2c4b58",
+    '&:hover': {
+        backgroundColor: "#405056",
+    },
+}));
+
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: 'inherit',
     '& .MuiInputBase-input': {
@@ -53,6 +63,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }))
 
 export default function SearchBar() {
+    const location = useLocation()
+    const navigate = useNavigate()
     const dispatch = useDispatch()
     const { search } = bindActionCreators(changeCharacter, dispatch)
     let character: string = useSelector((c: State) => c.character)
@@ -68,14 +80,14 @@ export default function SearchBar() {
 
     useEffect(() => {
         setSearchVal(character)
-    }, [])
-    
+    }, [character])
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="fixed" sx={{ background: "#17323e" }}>
                 <Toolbar>
                     <a href="/">
-                        <img src="./logo512.png" style={{ width: "34%" }} />
+                        <img src="./logo512.png" style={{ width: "34%" }} alt="logo" />
                     </a>
                     <Typography
                         variant="h6"
@@ -83,16 +95,20 @@ export default function SearchBar() {
                         component="div"
                         sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}>
                     </Typography>
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            value={searchVal}
-                            onChange={handleChange}
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }} />
-                    </Search>
+                    {
+                        location.pathname === "/"
+                            ? <Search>
+                                <SearchIconWrapper>
+                                    <SearchIcon />
+                                </SearchIconWrapper>
+                                <StyledInputBase
+                                    value={searchVal}
+                                    onChange={handleChange}
+                                    placeholder="Search…"
+                                    inputProps={{ 'aria-label': 'search' }} />
+                            </Search>
+                            : <ColorButton onClick={() => navigate("/")}>Back</ColorButton>
+                    }
                 </Toolbar>
             </AppBar>
         </Box>
